@@ -18,8 +18,9 @@ for i in "${array[@]}"
 do
 	echo $i
 done
-echo 1
 
+echo "~~~~~~~~~~~~~~~~~~~~~~~" >> ./log/fwtest.log
+echo "~~~~~~~~~~~~~~~~~~~~~~~" >> ./log/fwtest.log.s
 echo "Testing data: `date`" >> ./log/fwtest.log
 echo "Testing data: `date`" >> ./log/fwtest.log.s
 
