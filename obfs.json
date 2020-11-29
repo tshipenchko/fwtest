@@ -1,0 +1,10 @@
+{
+"server": "kyyinc.tk",
+"server_port": 8701,
+"password": "password",
+"local_port":1088,
+"timeout": 600,
+"method": "aes-256-cfb",
+"plugin":"obfs-local",
+"plugin_opts":"obfs=http;obfs-host=www.tutorialspoint.com/unix/case-esac-statement.htm;fast-open"
+}
