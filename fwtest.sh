@@ -5,7 +5,7 @@ if [[ $EUID -ne 0 ]]; then
 	exit 1
 fi
 # install
-apt install -y shadowsocks-libev simple-obfs jq curl
+apt install -y shadowsocks-libev simple-obfs jq curl psmisc
 # exit 1
 
 mkdir -p ./log # create logs folder in workdir
