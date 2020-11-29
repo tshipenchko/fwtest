@@ -8,8 +8,8 @@ fi
 apt install -y shadowsocks-libev simple-obfs jq curl
 # exit 1
 
-mkdir -p ./log # создает папку в рабочей директории
-tmp=`mktemp` # временные файлы
+mkdir -p ./log # create logs folder in workdir
+tmp=`mktemp` # temporary files
 
 file=$1
 obfs=$2
@@ -21,8 +21,10 @@ done
 
 echo "~~~~~~~~~~~~~~~~~~~~~~~" >> ./log/fwtest.log
 echo "~~~~~~~~~~~~~~~~~~~~~~~" >> ./log/fwtest.log.s
-echo "Testing data: `date`" >> ./log/fwtest.log
-echo "Testing data: `date`" >> ./log/fwtest.log.s
+echo "Testing date: `date`" >> ./log/fwtest.log
+echo "Testing date: `date`" >> ./log/fwtest.log.s
+
+#main script
 
 for i in "${array[@]}"
 do
@@ -36,14 +38,14 @@ do
 	kill -SIGINT $obfspid
 	case $status in
 		200)
-			echo "$i is working host"
-			echo "$i is working host" >> ./log/fwtest.log
-			echo "$i is working host" >> ./log/fwtest.log.s
+			echo "$i is a working host"
+			echo "$i is a working host" >> ./log/fwtest.log
+			echo "$i is a working host" >> ./log/fwtest.log.s
 			;;
 		*)
-			echo "$i is NOT working host"
+			echo "$i is NOT a working host"
 			echo "Error code: $status"
-			echo "$i is NOT working host" >> ./log/fwtest.log
+			echo "$i is NOT a working host" >> ./log/fwtest.log
 			echo "Error code: $status" >> ./log/fwtest.log
 			;;
 esac
