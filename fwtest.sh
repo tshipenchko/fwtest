@@ -1,31 +1,36 @@
 #!/bin/bash
-root?
+# root?
 if [[ $EUID -ne 0 ]]; then
 	echo -e "MUST RUN AS ROOT USER! use sudo"
 	exit 1
 fi
-install
-sudo apt install -y shadowsocks-libev simple-obfs
+# install
+apt install -y shadowsocks-libev simple-obfs jq curl
 # exit 1
 
-
 mkdir -p ./log # создает папку в рабочей директории
+tmp=`mktemp` # временные файлы
 
-file=`basename $1`
+file=$1
 obfs=$2
 IFS=' ' read -r -a array <<< `cat $file`
 for i in "${array[@]}"
 do
 	echo $i
 done
+echo 1
 
+echo "Testing data: `date`" >> ./log/fwtest.log
+echo "Testing data: `date`" >> ./log/fwtest.log.s
 
 for i in "${array[@]}"
 do
+	killall -SIGINT ss-local obfs-local && killall -SIGINT ss-local obfs-local
 	cp $obfs .tempobfs
-	jq '.plugin_opts = "obfs=http;obfs-host=$i;fast-open"' .tempobfs
+	a="obfs=http;obfs-host=$i;fast-open"
+	jq --arg a "$a" '.plugin_opts = $a' .tempobfs > "$tmp" && mv "$tmp" .tempobfs
 	echo "Checking $i"
-	ss-local -c .tempobfs -v || killall -SIGINT ss-local obfs-local && ss-local -c .tempobfs -v & obfspid=$!
+	ss-local -c .tempobfs -v & obfspid=$!
 	status=`curl -s -o /dev/null -w "%{http_code}" https://www.google.com/`
 	kill -SIGINT $obfspid
 	case $status in
