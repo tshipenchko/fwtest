@@ -34,7 +34,7 @@ do
 	jq --arg a "$a" '.plugin_opts = $a' .tempobfs > "$tmp" && mv "$tmp" .tempobfs
 	echo "Checking $i"
 	ss-local -c .tempobfs -v & obfspid=$!
-	status=`curl -s -o /dev/null -w "%{http_code}" https://www.google.com/`
+	status=`curl -m 5.5 -s -o /dev/null -w "%{http_code}" https://www.google.com/`
 	kill -SIGINT $obfspid
 	case $status in
 		200)
