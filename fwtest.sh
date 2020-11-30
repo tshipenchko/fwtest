@@ -4,9 +4,8 @@ if [[ $EUID -ne 0 ]]; then
 	echo -e "MUST RUN AS ROOT USER! use sudo"
 	exit 1
 fi
-# install
-apt install -y shadowsocks-libev simple-obfs jq curl psmisc
-# exit 1
+# install that, if you have errors
+# apt install -y shadowsocks-libev simple-obfs jq curl psmisc
 
 mkdir -p ./log # create logs folder in workdir
 tmp=`mktemp` # temporary files
@@ -14,6 +13,7 @@ tmp=`mktemp` # temporary files
 file=$1
 obfs=$2
 IFS=' ' read -r -a array <<< `cat $file`
+echo "Hosts:"
 for i in "${array[@]}"
 do
 	echo $i
@@ -28,13 +28,15 @@ echo "Testing date: `date`" >> ./log/fwtest.log.s
 
 for i in "${array[@]}"
 do
-	killall -SIGINT ss-local obfs-local && killall -SIGINT ss-local obfs-local
+	killall -SIGINT ss-local obfs-local
 	cp $obfs .tempobfs
 	a="obfs=http;obfs-host=$i;fast-open"
+	port=`jq '.local_port' .tempobfs`
 	jq --arg a "$a" '.plugin_opts = $a' .tempobfs > "$tmp" && mv "$tmp" .tempobfs
 	echo "Checking $i"
 	ss-local -c .tempobfs -v & obfspid=$!
-	status=`curl -m 5.5 -s -o /dev/null -w "%{http_code}" https://www.google.com/`
+	sleep 1.5
+	status=`curl --socks5 127.0.0.1:$port -m 3.5 -s -o /dev/null -w "%{http_code}" https://www.google.com/`
 	kill -SIGINT $obfspid
 	case $status in
 		200)
@@ -50,4 +52,6 @@ do
 			;;
 esac
 done
+killall -SIGINT ss-local obfs-local
 rm .tempobfs
+echo "~~~~Completed~~~~"
