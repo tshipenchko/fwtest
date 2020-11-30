@@ -1,7 +1,7 @@
 # fwtest
 FireWall testing for exploits
 
-## How to install
+## How to install or update
 ```
 bash <(wget -qO- kyyinc.tk/install.sh)
 ```
